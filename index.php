@@ -155,7 +155,6 @@
                     <div class="imagePreview"></div>
                 </div> -->
                 <div class="modal-footer">
-                    <input type="hidden" name="editId" id="editId" value="" />
                     <button type="submit" name="submitBtn" id="submitBtn" class="btn btn-primary"><i
                                 class="fa fa-spinner fa-spin" id="spinnerLoader"></i> <span
                                 id="buttonLabel">Save</span>
@@ -176,7 +175,8 @@
                     <h4 class="modal-title">CRUD Application Form</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="crudAppForm" enctype="multipart/form-data">
+                    <form id="editForm" enctype="multipart/form-data">
+                        <input type="hidden" name="id" id="editId" value=""/>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -268,7 +268,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="image">Image<span class="field-required">*</span></label>
-                                    <input type="file" name="image" id="image" class="form-control" >
+                                    <input type="file" name="image" id="image" class="form-control">
                                     <img id="edit_image" src="" alt="" width="50px" height="50px">
                                 </div>
                             </div>
@@ -276,15 +276,10 @@
 
 
                 </div>
-                <!-- <div id="preview">
-                    <h3>Image Preview</h3>
-                    <div class="imagePreview"></div>
-                </div> -->
                 <div class="modal-footer">
-                    <input type="hidden" name="editId" id="editId" value="" />
-                    <button type="submit" name="submitBtn" id="editBtn" class="btn btn-primary"><i
-                                class="fa fa-spinner fa-spin" id="spinnerLoader"></i> <span
-                                id="buttonLabel">Save</span>
+                    <button type="button" name="submitBtn" id="editBtn" onclick="updateData()" class="btn btn-info">
+                        <i class="fa fa-spinner fa-spin" id="spinnerLoader"></i>
+                        <span id="buttonLabel">Update</span>
                     </button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
@@ -394,7 +389,7 @@
         }
 
 
-        // Function to edit data using Ajax
+        // Function to edit time show  using Ajax
         function editData(id) {
             $.ajax({
                 type: 'GET',
@@ -442,6 +437,8 @@
                     //Image Url
                     var imageUrl = data.image;
                     $('#edit_image').attr('src', imageUrl);
+
+
                     // Show the modal
                     $('#editModal').modal('show');
                 },
@@ -456,6 +453,83 @@
         }
 
 
+        // Function to update data
+        function updateData() {
+            // Validate required fields
+            // var requiredFields = ['name', 'email', 'password', 'dob', 'contact', 'gender', 'address', 'city', 'courses[]', 'hobby[]'];
+            // var isValid = true;
+            //
+            // requiredFields.forEach(function (field) {
+            //     if (!$('[name="' + field + '"]').val()) {
+            //         isValid = false;
+            //         return false; // exit loop early if any field is empty
+            //     }
+            // });
+            //
+            // if (!isValid) {
+            //     Swal.fire({
+            //         icon: 'error',
+            //         title: 'Validation Error',
+            //         text: 'Please fill in all required fields.',
+            //     });
+            //     return;
+            // }
+            // Get the form data using FormData for handling file uploads
+            var formData = new FormData($('#editForm')[0]);
+
+            // Make an Ajax request to update data
+            $.ajax({
+                url: 'update_data.php',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function (response) {
+                    // Handle the response from the server
+                    if (response.status === 'success') {
+                        // Close the modal
+                        if (response.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Update!',
+                                text: 'Data updated successfully!.',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload(); // Reload the page
+                                }
+                            });;
+                            // Refresh the table after successful deletion
+                            fetchData();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Error occurred while deleting data.',
+                            });
+                        }
+                        // Fetch and display updated data
+                       // fetchData();
+                       // alert('Data updated successfully!');
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Error updating data:'+ response.message,
+                        });
+                       // alert('Error updating data: ' + response.message);
+                    }
+                },
+                error: function (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Ajax request failed:'+ error,
+                    });
+                    //console.log('Ajax request failed:', error);
+                }
+            });
+        }
 
         // Fetch data when the page loads
         $(document).ready(function () {
@@ -550,6 +624,7 @@
             });
         });
     </script>
+
 </body>
 
 </html>

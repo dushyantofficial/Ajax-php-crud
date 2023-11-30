@@ -14,8 +14,9 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    //echo print_r($_POST);die();
     // Collect form data
-    $id = $_POST['editId'];
+    $id = $_POST['id'];
     $name = $_POST['name'];
     $email = $_POST['email'];
     $password = $_POST['password'];
