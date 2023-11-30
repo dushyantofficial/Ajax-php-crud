@@ -128,9 +128,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="courses">Courses<span class="field-required">*</span></label>
-                                    <select class="form-control" name="courses[]" id="courses" multiple>
-                                        <option value="">select...</option>
+                                    <label for="courses">Courses<span class="field-required">*</span></label><br>
+                                    <select class="create-select form-control" name="courses[]" id="courses" multiple>
                                         <option value="Computer Science">Computer Science</option>
                                         <option value="Software engineering">Software engineering</option>
                                         <option value="BCA">BCA</option>
@@ -167,7 +166,7 @@
     </div>
 
     <!-- Edit Model Popup   -->
-    <div class="modal fade" id="editModal" role="dialog">
+    <div class="modal fade" id="editModal" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -253,9 +252,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="courses">Courses<span class="field-required">*</span></label>
-                                    <select class="form-control" name="courses[]" id="edit_courses" multiple>
-                                        <option value="">select...</option>
+                                    <label for="courses">Courses<span class="field-required">*</span></label><br>
+                                    <select class="edit-select form-control" name="courses[]" id="edit_courses" multiple>
                                         <option value="Computer Science">Computer Science</option>
                                         <option value="Software engineering">Software engineering</option>
                                         <option value="BCA">BCA</option>
@@ -293,6 +291,21 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="dataTables.min.js"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $(".create-select").select2({
+                placeholder: "Select Courses",
+                tags: true,
+            });
+            $(".edit-select").select2({
+                placeholder: "Select Courses",
+                tags: true,
+            });
+        })
+    </script>
 
 <!--    <script type="text/javascript">$('#dataTables').DataTable();</script>-->
 <!--  Show Data  -->
@@ -410,6 +423,13 @@
                     $('#edit_city').val(data.city);
 
                     // Multiselect (Courses)
+                    var selectedCourses = data.courses;
+                    var selectedCoursesArray = selectedCourses.split(',').map(function(course) {
+                        return course.trim(); // Trim spaces around each course name
+                    });
+
+                    // Set the selected values
+                    $(".edit-select").val(selectedCoursesArray).trigger("change");
                     $('#edit_courses').val(data.courses.split(','));
 
                     // Checkboxes (Hobby)
@@ -455,25 +475,32 @@
 
         // Function to update data
         function updateData() {
-            // Validate required fields
-            // var requiredFields = ['name', 'email', 'password', 'dob', 'contact', 'gender', 'address', 'city', 'courses[]', 'hobby[]'];
-            // var isValid = true;
-            //
-            // requiredFields.forEach(function (field) {
-            //     if (!$('[name="' + field + '"]').val()) {
-            //         isValid = false;
-            //         return false; // exit loop early if any field is empty
-            //     }
-            // });
-            //
-            // if (!isValid) {
-            //     Swal.fire({
-            //         icon: 'error',
-            //         title: 'Validation Error',
-            //         text: 'Please fill in all required fields.',
-            //     });
-            //     return;
-            // }
+            //Update id
+            var id = $('#editId').val();
+
+            // Validate fields
+            var name = $('#edit_name').val();
+            var email = $('#edit_email').val();
+            var password = $('#edit_password').val();
+            var dob = $('#edit_dob').val();
+            var contact = $('#edit_contact').val();
+            var gender = $('input[name="gender"]:checked').val();
+            var address = $('#edit_address').val();
+            var city = $('#edit_city').val();
+            var courses = $('#edit_courses').val();
+            // var hobby = $('input[name="hobby"]:checked').map(function () {
+            //     return this.value;
+            // }).get();
+
+            // Perform validation
+            if (!name || !email || !dob || !contact || !gender || !address || !city || !courses || !password) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please fill in all required fields!.',
+                })
+                return;
+            }
             // Get the form data using FormData for handling file uploads
             var formData = new FormData($('#editForm')[0]);
 
@@ -489,16 +516,13 @@
                     // Handle the response from the server
                     if (response.status === 'success') {
                         // Close the modal
+                        $('#editModal').modal('hide');
                         if (response.status === 'success') {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Update!',
                                 text: 'Data updated successfully!.',
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    location.reload(); // Reload the page
-                                }
-                            });;
+                            })
                             // Refresh the table after successful deletion
                             fetchData();
                         } else {
