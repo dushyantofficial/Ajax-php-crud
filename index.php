@@ -315,7 +315,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="image">Image<span class="field-required">*</span></label>
-                                    <input type="file" name="image" id="image" class="form-control">
+                                    <input type="file" name="image" id="image12" class="form-control">
                                     <img id="edit_image" src="" alt="" width="50px" height="50px">
                                 </div>
                             </div>
@@ -335,25 +335,44 @@
         </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="crud-app.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="dataTables.min.js"></script>
 
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<!-- Add this modal code to your HTML -->
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img id="modalImage" src="" alt="Image Preview" style="width: 100%;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="crud-app.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="dataTables.min.js"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $(".create-select").select2({
-                placeholder: "Select Courses",
-                tags: true,
-            });
-            $(".edit-select").select2({
-                placeholder: "Select Courses",
-                tags: true,
-            });
-        })
+<script>
+    $(document).ready(function () {
+        $(".create-select").select2({
+            placeholder: "Select Courses",
+            tags: true,
+        });
+        $(".edit-select").select2({
+            placeholder: "Select Courses",
+            tags: true,
+        });
+    })
     </script>
     <script>
         function limitLength(element, maxLength) {
@@ -378,7 +397,6 @@
 
                     // Loop through the fetched data and append it to the table
                     $.each(data.data, function (index, row) {
-                        //  var editButton = '<button class="btn btn-primary" onclick="editData(' + row.id + ')">Edit</button>';
                         var editButton = '<button class="btn btn-info" onclick="editData(' + row.id + ')"><i class="fa fa-edit"></i></button>';
 
                         var deleteButton = '<button class="btn btn-danger" onclick="deleteData(' + row.id + ')"><i class="fa fa-trash"></i></button>';
@@ -395,7 +413,7 @@
                             '<td>' + row.city + '</td>' +
                             '<td>' + row.courses + '</td>' +
                             '<td>' + row.hobby + '</td>' +
-                            '<td><img src="' + row.image + '" alt="Image" style="width: 50px; height: 50px;"></td>' +
+                            '<td><img src="' + row.image + '" alt="Image" style="width: 50px; height: 50px; cursor: pointer;" onclick="openImageModal(\'' + row.image + '\')"></td>' +
                             '<td>' + editButton + ' ' + deleteButton + '</td>' +
                             '</tr>');
                     });
@@ -588,6 +606,61 @@
                 })
                 return;
             }
+
+            // Validate email format
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            var email = $('#edit_email').val();
+
+            if (!emailRegex.test(email)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Email Error',
+                    text: 'Invalid email format.',
+                });
+                return;
+            }
+
+            // Validate contact number format (10 digits)
+            var contactRegex = /^\d{10}$/;
+            var contact = $('#edit_contact').val();
+
+            if (!contactRegex.test(contact)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Contact Number Error',
+                    text: 'Contact number must be 10 digits.',
+                });
+                return;
+            }
+
+            // Validate image file
+            var imageInput = $('#image12')[0];
+            var allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            var maxSize = 5 * 1024 * 1024; // 5 MB
+
+            if (imageInput.files.length > 0) {
+                var fileType = imageInput.files[0].type;
+                var fileSize = imageInput.files[0].size;
+
+                if (!allowedTypes.includes(fileType)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Image Error',
+                        text: 'Invalid image type. Only JPG, JPEG, PNG, and GIF are allowed.',
+                    });
+                    return;
+                }
+
+                if (fileSize > maxSize) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Image Error',
+                        text: 'Image size exceeds the limit. Maximum size allowed is 5 MB.',
+                    });
+                    return;
+                }
+            }
+
             // Get the form data using FormData for handling file uploads
             var formData = new FormData($('#editForm')[0]);
 
@@ -674,6 +747,58 @@
                         text: 'Please fill in all required fields.',
                     });
                     return;
+                }
+                // Validate email format
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                var email = $('[name="email"]').val();
+
+                if (!emailRegex.test(email)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Email Error',
+                        text: 'Invalid email format.',
+                    });
+                    return;
+                }
+
+                // Validate contact number format (10 digits)
+                var contactRegex = /^\d{10}$/;
+                var contact = $('[name="contact"]').val();
+
+                if (!contactRegex.test(contact)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Contact Number Error',
+                        text: 'Contact number must be 10 digits.',
+                    });
+                    return;
+                }
+                // Validate image file
+                var imageInput = $('#image')[0];
+                var allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                var maxSize = 5 * 1024 * 1024; // 5 MB
+
+                if (imageInput.files.length > 0) {
+                    var fileType = imageInput.files[0].type;
+                    var fileSize = imageInput.files[0].size;
+
+                    if (!allowedTypes.includes(fileType)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Image Error',
+                            text: 'Invalid image type. Only JPG, JPEG, PNG, and GIF are allowed.',
+                        });
+                        return;
+                    }
+
+                    if (fileSize > maxSize) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Image Error',
+                            text: 'Image size exceeds the limit. Maximum size allowed is 5 MB.',
+                        });
+                        return;
+                    }
                 }
                 // Disable the submit button to prevent multiple submissions
                 $('#submitBtn').prop('disabled', true);
@@ -778,6 +903,17 @@
             }
         }
     </script>
+
+<script>
+    // Add this JavaScript code to your script
+    function openImageModal(imageUrl) {
+        // Set the image source in the modal
+        $('#modalImage').attr('src', imageUrl);
+
+        // Show the modal
+        $('#imageModal').modal('show');
+    }
+</script>
 </body>
 
 </html>
