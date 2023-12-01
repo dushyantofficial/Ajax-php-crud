@@ -86,8 +86,8 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="contact">Contact <span class="field-required">*</span></label>
-                                    <input type="text" name="contact" id="contact" placeholder="Contact"
-                                        class="form-control">
+                                    <input type="number" min="1" maxlength="10" name="contact" id="contact" placeholder="Contact"
+                                        class="form-control" oninput="limitLength(this, 10)">
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -215,8 +215,8 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="contact">Contact <span class="field-required">*</span></label>
-                                    <input type="text" name="contact" id="edit_contact" placeholder="Contact"
-                                           class="form-control">
+                                    <input type="number" min="1" maxlength="10" name="contact" id="edit_contact" placeholder="Contact"
+                                           class="form-control" oninput="limitLength(this, 10)">
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -316,7 +316,14 @@
             });
         })
     </script>
+    <script>
+        function limitLength(element, maxLength) {
+            if (element.value.length > maxLength) {
+                element.value = element.value.slice(0, maxLength);
+            }
+        }
 
+    </script>
 <!--    <script type="text/javascript">$('#dataTables').DataTable();</script>-->
 <!--  Show Data  -->
     <script>
