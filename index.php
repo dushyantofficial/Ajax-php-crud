@@ -361,13 +361,13 @@
 <script src="Js/show_data_script.js"></script>
 
 <!--Data Create Js-->
-<script src="Js/create_script.js"></script>
+<script src="Js/create_data_script.js"></script>
 
 <!--Data Edit / Update Js-->
-<script src="Js/edit_update_script.js"></script>
+<script src="Js/edit_update_data_script.js"></script>
 
 <!--Data Delete Js-->
-<script src="Js/delete_data.js"></script>
+<script src="Js/delete_data_script.js"></script>
 
 <!--Other Activity Js-->
 <script src="Js/other_activity_script.js"></script>

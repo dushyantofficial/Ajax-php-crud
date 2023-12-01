@@ -1,17 +1,7 @@
 <?php
-// Replace these values with your actual database details
-$host = "localhost";
-$username = "root";
-$password = "";
-$database = "codingbirds";
-
 // Create a database connection
-$conn = new mysqli($host, $username, $password, $database);
+include('config.php');
 
-// Check the connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Collect form data
@@ -52,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 //                address='$address', city='$city', courses='$courses', hobby='$hobbies'
 //            WHERE id = $id";
 
-    if ($conn->query($sql) === TRUE) {
+    if ($connection->query($sql) === TRUE) {
         echo json_encode(["status" => "success"]);
     } else {
         echo json_encode(["status" => "error"]);
@@ -62,5 +52,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Close the database connection
-$conn->close();
+$connection->close();
 ?>

@@ -1,17 +1,7 @@
 <?php
-// Replace these values with your actual database details
-$host = "localhost";
-$username = "root";
-$password = "";
-$database = "codingbirds";
-
 // Create a database connection
-$conn = new mysqli($host, $username, $password, $database);
+include('config.php');
 
-// Check the connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Collect form data
@@ -73,10 +63,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $sql = "INSERT INTO crud_application (name, email, password, dob, contact, gender, address, city, courses, hobby, image) 
                     VALUES ('$name', '$email', '$password', '$dob', '$contact', '$gender', '$address', '$city', '$courses', '$hobbies', '$targetFile')";
 
-            if ($conn->query($sql) === TRUE) {
+            if ($connection->query($sql) === TRUE) {
                 echo json_encode(["status" => "success", "message" => "Data inserted successfully"]);
             } else {
-                echo json_encode(["status" => "error", "message" => "Error: " . $conn->error]);
+                echo json_encode(["status" => "error", "message" => "Error: " . $connection->error]);
             }
         } else {
             echo json_encode(["status" => "error", "message" => "Sorry, there was an error uploading your file."]);
@@ -87,5 +77,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Close the database connection
-$conn->close();
+$connection->close();
 ?>

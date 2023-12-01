@@ -1,24 +1,14 @@
 <?php
-// Replace these values with your actual database details
-$host = "localhost";
-$username = "root";
-$password = "";
-$database = "codingbirds";
-
+include('config.php');
 // Create a database connection
-$conn = new mysqli($host, $username, $password, $database);
 
-// Check the connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
 
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["id"])) {
     $id = $_GET["id"];
 
     // Fetch the record based on the ID
     $sql = "SELECT * FROM crud_application WHERE id = $id";
-    $result = $conn->query($sql);
+    $result = $connection->query($sql);
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
@@ -31,5 +21,5 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["id"])) {
 }
 
 // Close the database connection
-$conn->close();
+$connection->close();
 ?>
