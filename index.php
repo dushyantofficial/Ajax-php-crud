@@ -70,6 +70,11 @@
                                     <label for="password">Password <span class="field-required">*</span></label>
                                     <input type="password" name="password" id="password" placeholder="password"
                                         class="form-control">
+                            <span class="toggle-password"
+                                  onclick="togglePasswordVisibility('password')" style="margin: 140px !important;position: absolute;
+    top: -108px;">
+    <i class="fa fa-eye-slash" aria-hidden="true"></i>
+</span>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -194,6 +199,11 @@
                                     <label for="password">Password <span class="field-required">*</span></label>
                                     <input type="password" name="password" id="edit_password" placeholder="password"
                                            class="form-control">
+                                    <span class="toggle-password1"
+                                          onclick="togglePasswordVisibility1('edit_password')" style="margin: 140px !important;position: absolute;
+    top: -108px;">
+    <i class="fa fa-eye-slash" aria-hidden="true"></i>
+</span>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -649,6 +659,39 @@
         });
     </script>
 
+<!-- Password Hide/Show -->
+    <script>
+        function togglePasswordVisibility(inputId) {
+            var passwordInput = document.getElementById(inputId);
+            var toggleIcon = document.querySelector('.toggle-password i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            }
+        }
+    </script>
+    <script>
+        function togglePasswordVisibility1(inputId) {
+            var passwordInput = document.getElementById(inputId);
+            var toggleIcon = document.querySelector('.toggle-password1 i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            }
+        }
+    </script>
 </body>
 
 </html>
