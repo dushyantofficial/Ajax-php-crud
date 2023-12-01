@@ -14,7 +14,11 @@ if ($conn->connect_error) {
 }
 
 // Fetch data from the database (replace with your actual query)
-$sql = "SELECT * FROM crud_application";
+$recordsPerPage = 2;
+$page = isset($_GET['page']) ? $_GET['page'] : 1;
+$startFrom = ($page - 1) * $recordsPerPage;
+
+$sql = "SELECT * FROM crud_application LIMIT $startFrom, $recordsPerPage";
 $result = $conn->query($sql);
 
 $data = array();
@@ -24,10 +28,19 @@ if ($result->num_rows > 0) {
         $data[] = $row;
     }
 }
+// Count total records
+$totalRecords = $conn->query("SELECT COUNT(*) FROM crud_application")->fetch_row()[0];
 
+// Calculate total pages
+$totalPages = ceil($totalRecords / $recordsPerPage);
+
+$response = array(
+    'data' => $data,
+    'totalPages' => $totalPages
+);
 // Return data as JSON
 header('Content-Type: application/json');
-echo json_encode($data);
+echo json_encode($response);
 
 // Close the database connection
 $conn->close();
